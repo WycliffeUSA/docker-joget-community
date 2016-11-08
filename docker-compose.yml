@@ -1,0 +1,30 @@
+data:
+    image: silintl/data-volume:latest
+    container_name: jogetdata
+    volumes:
+        - ./wflow:/opt/joget/wflow
+jwdb:
+    image: mysql:5.6
+    container_name: jwdb
+    ports:
+        - "3306"
+    environment:
+        MYSQL_ROOT_PASSWORD: jwdb
+        MYSQL_USER: joget
+        MYSQL_PASSWORD: joget
+        MYSQL_DATABASE: jwdb
+joget:
+    image: jogetworkflow/joget-community:latest
+    container_name: joget
+    ports:
+        - "8080:8080"
+    links:
+        - jwdb
+    environment:
+        MYSQL_HOST: jwdb
+        MYSQL_DATABASE: jwdb
+        MYSQL_PORT: 3306
+        MYSQL_USER: joget
+        MYSQL_PASSWORD: joget
+    volumes_from:
+        - data
